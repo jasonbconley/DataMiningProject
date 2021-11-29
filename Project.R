@@ -1,12 +1,15 @@
 # Utilizing code and information from 
 # https://drive.google.com/file/d/1gn7cMdpMkDwHVTfDldAkn5i3_pRtoH-H/view
 # a data mining book with a focus on the R programming language
+# Only have run the below install functions once
 install.packages("tm")
 install.packages("corpus")
 install.packages("SnowballC")
 install.packages("ggplot2")
 install.packages("Rcpp")
 install.packages("wordcloud")
+# Will most likely have to run below library functions every time project
+# is reopened
 library(tm)
 library(corpus)
 library(SnowballC)
@@ -14,7 +17,7 @@ library(Rcpp)
 library(ggplot2)
 library(wordcloud)
 
-# Here we set up the fraudulent email dataset into a Corpus for processing
+# Here we set up the fraudulent email data set into a Corpus for processing
 # A corpus is a data structure that I had not seen before this text. Running
 # the command View(emailCorpus) after creating it will show the structure
 email_data <- read.csv("https://raw.githubusercontent.com/jasonbconley/DataMiningProject/main/fraud_email_.csv")
