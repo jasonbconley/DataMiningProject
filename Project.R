@@ -65,4 +65,7 @@ m <- as.matrix(tdm)
 wordFreq <- sort(rowSums(m), decreasing=TRUE)
 set.seed(123)
 grayLevels <- gray( (wordFreq+10) / (max(wordFreq)+10) )
-wordcloud(words=names(wordFreq), freq=wordFreq, min.freq=3, random.order=F, colors=pal)
+wordcloud(words=names(wordFreq), freq=wordFreq, random.order=F, colors=pal)
+
+# Now we must make association rules, then determine how to iterate through all the emails 
+# and show support counts and output percentage of emails that are at or above support count
