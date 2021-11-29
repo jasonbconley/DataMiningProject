@@ -4,9 +4,15 @@
 install.packages("tm")
 install.packages("corpus")
 install.packages("SnowballC")
+install.packages("ggplot2")
+install.packages("Rcpp")
+install.packages("wordcloud")
 library(tm)
 library(corpus)
 library(SnowballC)
+library(Rcpp)
+library(ggplot2)
+library(wordcloud)
 
 # Here we set up the fraudulent email dataset into a Corpus for processing
 # A corpus is a data structure that I had not seen before this text. Running
@@ -26,15 +32,34 @@ removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
 emailCorpus <- tm_map(emailCorpus, removeNumPunct)
 replaceComma <- function(x) gsub(",", " ", x)
 emailCorpus <- tm_map(emailCorpus, replaceComma)
+conjunctions <- c("a", "that", "and", "are", "as", "at", "but", "for", "has", "the", "is", "to", "or", "this", "come", "also")
+myStopwords <- c(stopwords("en"), "available", "via", conjunctions)
+emailCorpus <- tm_map(emailCorpus, removeWords, myStopwords)
 emailCorpus <- tm_map(emailCorpus, removePunctuation)
 emailCorpus <- tm_map(emailCorpus, removeNumbers)
-emailCorpus <- tm_map(emailCorpus, removeWords)
 emailCorpus <- tm_map(emailCorpus, stripWhitespace)
 
 # Now we can create the term document matrix, a collection of all terms and
 # the number of their occurrences in each document or email
-tdm <- TermDocumentMatrix(emailCorpus, control=list(wordLengths=c(1,Inf)))
-tdm
+tdm <- TermDocumentMatrix(emailCorpus, control=list(wordLengths=c(2,Inf)))
+tdm <- removeSparseTerms(tdm, 0.9)
 
-# This function shows the frequency of terms that are greater than 10
-findFreqTerms(tdm, lowfreq = 10)
+# This function shows the frequency of terms that are greater than 2000
+# findFreqTerms(tdm, lowfreq = 2000)
+
+# Create a word cloud of the most popular words
+termFrequency <- rowSums(as.matrix(tdm))
+termFrequency <- subset(termFrequency, termFrequency>=2000)
+df <- data.frame(term=names(termFrequency), freq=termFrequency)
+ggplot(df, aes(x=term, y=freq)) + geom_bar(stat="identity") + xlab("Terms") + ylab("Count") + coord_flip()
+
+# Setting some colors
+pal <- brewer.pal(9, "BuGn")
+pal <- pal[-(1:4)]
+
+# Creating a word cloud, we will use this to show the user the most frequent words
+m <- as.matrix(tdm)
+wordFreq <- sort(rowSums(m), decreasing=TRUE)
+set.seed(123)
+grayLevels <- gray( (wordFreq+10) / (max(wordFreq)+10) )
+wordcloud(words=names(wordFreq), freq=wordFreq, min.freq=3, random.order=F, colors=pal)
