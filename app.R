@@ -85,12 +85,12 @@ ui <- fluidPage(
     # Application title
     titlePanel("Nigerian Letter Email Fraud"),
     tags$head(tags$style(".leftAlign{float:left;}")),
-    verticalLayout(
+    sidebarLayout(
         mainPanel(
            titlePanel("Most Popular Words in the dataset"),
            plotOutput("wordCloud")
         ),
-        wellPanel (
+        sidebarPanel (
           pickerInput("wordCloudChoices","Word Cloud Choices", selected = names(wordFreq), choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
           pickerInput("wordChoices","Association Rule", selected = "will", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
           # numericInput("supportCount", "Support Count [0, 1]", value = 0.1, step = 0.1, min = 0.1, max = 0.9),
@@ -110,7 +110,7 @@ server <- function(input, output) {
     
     output$numSupported <- renderText({
       supportNumber = getSupport(input$wordChoices, input$supportCount)
-      out <- as.String(round(supportNumber / totalEmails, digits = 2))
+      out <- as.String(round(100 * (supportNumber / totalEmails), digits = 2))
       out <- out + "% of emails contain the chosen association rule"
       out 
     })
