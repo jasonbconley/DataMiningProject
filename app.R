@@ -19,7 +19,7 @@ library(wordcloud)
 # Here we set up the fraudulent email data set into a Corpus for processing
 # A corpus is a data structure that I had not seen before this text. Running
 # the command View(emailCorpus) after creating it will show the structure
-email_data <- read.csv("https://raw.githubusercontent.com/jasonbconley/DataMiningProject/main/fraud_email_.csv")
+email_data <- read.csv("fraud_email_.csv")
 colnames(email_data) <- c("text", "class")
 emailCorpusFrame <- corpus_frame(email_data)
 emailCorpus <- Corpus(VectorSource(emailCorpusFrame$text))
@@ -95,7 +95,7 @@ ui <- fluidPage(
           pickerInput("wordChoices","Association Rule", selected = "will", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
           # numericInput("supportCount", "Support Count [0, 1]", value = 0.1, step = 0.1, min = 0.1, max = 0.9),
           submitButton("Submit"),
-          helpText("Number of emails supported by given association rule choices: "),
+          helpText("Percentage of emails containing the chosen word(s): "),
           textOutput("numSupported")
         )
     )
