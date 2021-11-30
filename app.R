@@ -98,6 +98,11 @@ ui <- fluidPage(
           helpText("Percentage of emails containing the chosen word(s): "),
           textOutput("numSupported")
         )
+    ),
+    verticalLayout (
+        mainPanel(
+          helpText("This page was created for a Data Mining Class and displays the word cloud and association rule outputs from the popular Nigerian Letter Email Fraud dataset")
+        )
     )
 )
 
