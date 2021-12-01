@@ -10,7 +10,7 @@ library(wordcloud)
 # Here we set up the fraudulent email data set into a Corpus for processing
 # A corpus is a data structure that I had not seen before this text. Running
 # the command View(emailCorpus) after creating it will show the structure
-email_data <- read.csv("fraud_email_.csv")
+email_data <- read.csv("https://raw.githubusercontent.com/jasonbconley/DataMiningProject/main/fraud_email_.csv")
 colnames(email_data) <- c("text", "class")
 emailCorpusFrame <- corpus_frame(email_data)
 emailCorpus <- Corpus(VectorSource(emailCorpusFrame$text))
@@ -35,10 +35,10 @@ emailCorpus <- tm_map(emailCorpus, stripWhitespace)
 # Now we can create the term document matrix, a collection of all terms and
 # the number of their occurrences in each document or email
 tdm <- TermDocumentMatrix(emailCorpus, control=list(wordLengths=c(2,Inf)))
-tdm <- removeSparseTerms(tdm, 0.9)
+tdm2 <- removeSparseTerms(tdm, 0.9)
 
 # Creating a word cloud, we will use this to show the user the most frequent words
-m <- as.matrix(tdm)
+m <- as.matrix(tdm2)
 wordFreq <- sort(rowSums(m), decreasing=TRUE)
 set.seed(123)
 grayLevels <- gray( (wordFreq+10) / (max(wordFreq)+10) )
@@ -47,10 +47,13 @@ grayLevels <- gray( (wordFreq+10) / (max(wordFreq)+10) )
 totalEmails <- nrow(emailCorpusFrame)
 allEmails <- as.vector(emailCorpusFrame$text)
 
-saveRDS(tdm, file = "tdm.RDS")
-saveRDS(wordFreq, file = "wordFreq.RDS")
-saveRDS(grayLevels, file = "grayLevels.RDS")
-saveRDS(totalEmails, file = "totalEmails.RDS")
-saveRDS(allEmails, file = "allEmails.RDS")
-save(tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
+# Cluster terms
+distMatrix <- dist(scale(m))
+fit <- hclust(distMatrix, method="ward.D")
+
+plot(fit)
+rect.hclust(fit, k=10)
+groups <- cutree(fit, k=10)
+
+save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
 
