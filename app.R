@@ -41,45 +41,60 @@ getSupport <- function(wordChoices, suppCount) {
   supportNumber
 }
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
-    
-    # Application title
-    titlePanel("Nigerian Letter Email Fraud"),
-    tags$head(tags$style(".leftAlign{float:left;}")),
-    sidebarLayout(
-        mainPanel(
-           titlePanel("Most Popular Words in the dataset"),
-           plotOutput("wordCloud")
-        ),
-        sidebarPanel (
-          pickerInput("wordCloudChoices","Word Cloud Choices", selected = names(wordFreq), choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
-          pickerInput("wordChoices","Association Rule", selected = "will", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
-          # numericInput("supportCount", "Support Count [0, 1]", value = 0.1, step = 0.1, min = 0.1, max = 0.9),
-          submitButton("Submit"),
-          helpText("Percentage of emails containing the chosen word(s): "),
-          textOutput("numSupported")
+ui <- navbarPage("Navbar",
+        tabPanel("WordCloud",
+          sidebarLayout(
+                sidebarPanel(
+                  pickerInput("wordCloudChoices","Word Cloud Choices", selected = names(wordFreq), choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
+                  pickerInput("wordChoices","Word Choice", selected = "will", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
+                  helpText("Percentage of emails containing the chosen word(s): "),
+                  textOutput("numSupported"),
+                  submitButton("Submit")
+                ),
+                mainPanel(
+                  plotOutput("wordCloud")
+                )
+             )
+          ),
+        tabPanel("Clustering",
+          verticalLayout(
+            mainPanel(
+              plotOutput("Dendrogram", inline=TRUE)
+            ),
+            wellPanel(
+              helpText("Choose grouping size: "),
+              numericInput("k", "Cluster Group Size", value = 10, min=3, max=10, step=1),
+              submitButton("Submit"),
+              htmlOutput("groups")
+            )
+          )
         )
-    ),
-    verticalLayout (
-        mainPanel(
-          helpText("This page was created for a Data Mining Class and displays the word cloud and association rule outputs from the popular Nigerian Letter Email Fraud dataset")
-        )
-    )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
     output$wordCloud <- renderPlot({
-      wordcloud(words=input$wordCloudChoices, freq=wordFreq[input$wordCloudChoices], random.order=F, colors=pal)
-    })
+      wordcloud(words=input$wordCloudChoices, freq=wordFreq[input$wordCloudChoices], random.order=F, colors=pal)}, height = 600, width = 600
+    )
     
     output$numSupported <- renderText({
       supportNumber = getSupport(input$wordChoices, input$supportCount)
       out <- as.String(round(100 * (supportNumber / totalEmails), digits = 2))
       out <- out + "% of emails contain the chosen association rule"
       out 
+    })
+    
+    output$Dendrogram <- renderPlot({
+      plot(fit, cex=input$opt.cex, cex.lab=input$opt.cexaxis)
+      rect.hclust(fit, k=input$k)}, height = 600, width = 1400
+    )
+    
+    output$groups <- renderUI({
+      
+      x <- paste0("<strong>Here are your states</strong>: ", paste(states, collapse = " "))
+      HTML(x)
+      
     })
     
 }

@@ -6,6 +6,7 @@ library(SnowballC)
 library(Rcpp)
 library(ggplot2)
 library(wordcloud)
+library(dplyr)
 
 # Here we set up the fraudulent email data set into a Corpus for processing
 # A corpus is a data structure that I had not seen before this text. Running
@@ -54,6 +55,14 @@ fit <- hclust(distMatrix, method="ward.D")
 plot(fit)
 rect.hclust(fit, k=10)
 groups <- cutree(fit, k=10)
+group_frame <- data.frame(names(groups), groups[names(groups)])
+colnames(group_frame) <- c("word", "group")
+k = 10
+currentFrame <- data.frame(1:k)
+for (indx in 1:k) {
+  group <- (filter(group_frame, group == 1))$words
+  currentFrame[indx] = group$word
+}
 
 save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
 
