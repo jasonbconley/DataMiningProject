@@ -19,6 +19,7 @@ library(wordcloud2)
 library(dplyr)
 library(tidyverse)
 library(knitr)
+library(rmarkdown)
 
 load("objects.RData")
 
