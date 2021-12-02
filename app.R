@@ -20,6 +20,8 @@ library(dplyr)
 library(tidyverse)
 library(knitr)
 library(rmarkdown)
+library(NLP)
+library(RColorBrewer)
 
 load("objects.RData")
 
@@ -46,7 +48,6 @@ getSupport <- function(wordChoices, suppCount) {
   supportNumber
 }
 
-rmdFile <- c("mrkdwn.rmd")
 sapply(rmdFile, knit, quiet = T)
 
 ui <- navbarPage("Mining the \"419\" Dataset",
