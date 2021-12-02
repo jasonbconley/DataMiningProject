@@ -66,5 +66,5 @@ for (indx in 1:k) {
 
 rmdFile <- c("mrkdwn.Rmd")
 
-save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
+save(rmdFile, fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
 
