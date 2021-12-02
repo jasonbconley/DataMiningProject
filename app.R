@@ -48,7 +48,6 @@ getSupport <- function(wordChoices, suppCount) {
   supportNumber
 }
 
-rmdFile <- sapply("mrkdwn.Rmd", knit, quiet = T)
 
 ui <- navbarPage("Mining the \"419\" Dataset",
         tabPanel("Main",
