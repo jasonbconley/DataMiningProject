@@ -15,6 +15,8 @@ library(SnowballC)
 library(Rcpp)
 library(ggplot2)
 library(wordcloud)
+library(wordcloud2)
+library(dplyr)
 
 load("objects.RData")
 
@@ -41,18 +43,36 @@ getSupport <- function(wordChoices, suppCount) {
   supportNumber
 }
 
+makeGroups <- function(k) {
+  groups <- cutree(fit, k)
+  group_frame <- data.frame(names(groups), groups[names(groups)])
+  colnames(group_frame) <- c("word", "group")
+  x <- as.String("Words Grouped from 1:k\n")
+  
+  for (indx in 1:k) {
+    group <- (filter(group_frame, group == indx))$word
+    x <- x + "Group #" + as.String(indx) + ": "
+    x <- x + as.String(paste(group, collapse = ", ")) + "\n"
+  }
+}
+
 ui <- navbarPage("Navbar",
         tabPanel("WordCloud",
-          sidebarLayout(
-                sidebarPanel(
+          verticalLayout(
+                fluidRow(
+                  column(8, align = "center", wordcloud2Output("wordCloud"))
+                ),
+                wellPanel(
                   pickerInput("wordCloudChoices","Word Cloud Choices", selected = names(wordFreq), choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
                   pickerInput("wordChoices","Word Choice", selected = "will", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
                   helpText("Percentage of emails containing the chosen word(s): "),
-                  textOutput("numSupported"),
-                  submitButton("Submit")
-                ),
-                mainPanel(
-                  plotOutput("wordCloud")
+                  verbatimTextOutput("numSupported", placeholder = TRUE),
+                  submitButton("Submit"),
+                  tags$head(tags$style("#numSupported{
+                                  font-size: 20px;
+                                 }"
+                  )
+                  )
                 )
              )
           ),
@@ -64,8 +84,8 @@ ui <- navbarPage("Navbar",
             wellPanel(
               helpText("Choose grouping size: "),
               numericInput("k", "Cluster Group Size", value = 10, min=3, max=10, step=1),
-              submitButton("Submit"),
-              htmlOutput("groups")
+              verbatimTextOutput("groups"),
+              submitButton("Submit")
             )
           )
         )
@@ -74,27 +94,35 @@ ui <- navbarPage("Navbar",
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-    output$wordCloud <- renderPlot({
-      wordcloud(words=input$wordCloudChoices, freq=wordFreq[input$wordCloudChoices], random.order=F, colors=pal)}, height = 600, width = 600
+    output$wordCloud <- renderWordcloud2({
+      wordcloud2(data=enframe(wordFreq[input$wordCloudChoices]), ellipticity = 1, minRotation = -pi/6, maxRotation = -pi/6)}
     )
     
     output$numSupported <- renderText({
       supportNumber = getSupport(input$wordChoices, input$supportCount)
       out <- as.String(round(100 * (supportNumber / totalEmails), digits = 2))
-      out <- out + "% of emails contain the chosen association rule"
+      out <- out + as.String("% of emails contain the chosen word combination")
       out 
     })
     
     output$Dendrogram <- renderPlot({
-      plot(fit, cex=input$opt.cex, cex.lab=input$opt.cexaxis)
+      plot(fit, cex=input$opt.cex, cex.lab=input$opt.cexaxis, xlab = "Words")
       rect.hclust(fit, k=input$k)}, height = 600, width = 1400
     )
     
-    output$groups <- renderUI({
+    output$groups <- renderText({
+      groups <- cutree(fit, input$k)
+      group_frame <- data.frame(names(groups), groups[names(groups)])
+      colnames(group_frame) <- c("word", "group")
+      x <- as.String("Words Grouped from 1:k\n")
       
-      x <- paste0("<strong>Here are your states</strong>: ", paste(states, collapse = " "))
-      HTML(x)
-      
+      for (indx in 1:input$k) {
+        group <- (filter(group_frame, group == indx))$word
+        x <- x + "Group #" + as.String(indx) + ": "
+        x <- x + as.String(paste(group, collapse = ", ")) 
+        x <- x + as.String("\n")
+      }
+      x
     })
     
 }

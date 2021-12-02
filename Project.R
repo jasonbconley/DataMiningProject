@@ -61,7 +61,7 @@ k = 10
 currentFrame <- data.frame(1:k)
 for (indx in 1:k) {
   group <- (filter(group_frame, group == 1))$words
-  currentFrame[indx] = group$word
+  currentWords = group$word
 }
 
 save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
