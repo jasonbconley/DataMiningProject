@@ -17,6 +17,7 @@ library(ggplot2)
 library(wordcloud)
 library(wordcloud2)
 library(dplyr)
+library(tidyverse)
 
 load("objects.RData")
 
@@ -83,7 +84,7 @@ ui <- navbarPage("Navbar",
             ),
             wellPanel(
               helpText("Choose grouping size: "),
-              numericInput("k", "Cluster Group Size", value = 10, min=3, max=10, step=1),
+              numericInput("k", "Cluster Group Size", value = 10, min=3, max=20, step=1),
               verbatimTextOutput("groups"),
               submitButton("Submit")
             )
