@@ -53,7 +53,7 @@ rmdFile <- sapply("mrkdwn.Rmd", knit, quiet = T)
 ui <- navbarPage("Mining the \"419\" Dataset",
         tabPanel("Main",
           verticalLayout(
-            includeMarkdown(rmdFile)
+            includeMarkdown("mrkdwn.md")
           )       
         ),
         tabPanel("WordCloud",
