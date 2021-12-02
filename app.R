@@ -96,7 +96,7 @@ ui <- navbarPage("Navbar",
 server <- function(input, output) {
   
     output$wordCloud <- renderWordcloud2({
-      wordcloud2(data=enframe(wordFreq[input$wordCloudChoices]), ellipticity = 1, minRotation = -pi/6, maxRotation = -pi/6)}
+      wordcloud2(data=enframe(wordFreq[input$wordCloudChoices]), color = pal, ellipticity = 1, minRotation = -pi/6, maxRotation = -pi/6)}
     )
     
     output$numSupported <- renderText({
