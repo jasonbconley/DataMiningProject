@@ -70,7 +70,7 @@ ui <- navbarPage("Mining the \"419\" Dataset",
                 ),
                 wellPanel(
                   pickerInput("wordCloudChoices","Word Cloud Choices", selected = names(wordFreq), choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
-                  pickerInput("wordChoices","Word Choice", selected = "will", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
+                  pickerInput("wordChoices","Word Choice", choices=names(wordFreq), options = list(`actions-box` = TRUE),multiple = T),
                   helpText("Percentage of emails containing the chosen word(s): "),
                   verbatimTextOutput("numSupported", placeholder = TRUE),
                   submitButton("Submit"),
@@ -111,7 +111,10 @@ server <- function(input, output) {
     output$numSupported <- renderText({
       supportNumber = getSupport(input$wordChoices, input$supportCount)
       out <- as.String(round(100 * (supportNumber / totalEmails), digits = 2))
-      out <- out + as.String("% of emails contain the chosen word combination")
+      out <- out + as.String("% of emails (or ")
+      out <- out + as.String(supportNumber)
+      out <- out + as.String(" emails) contain the chosen word combination (total emails = ")
+      out <- out + as.String(totalEmails) + as.String(")")
       out 
     })
     
