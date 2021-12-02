@@ -18,6 +18,7 @@ library(wordcloud)
 library(wordcloud2)
 library(dplyr)
 library(tidyverse)
+library(knitr)
 
 load("objects.RData")
 
@@ -44,23 +45,13 @@ getSupport <- function(wordChoices, suppCount) {
   supportNumber
 }
 
-makeGroups <- function(k) {
-  groups <- cutree(fit, k)
-  group_frame <- data.frame(names(groups), groups[names(groups)])
-  colnames(group_frame) <- c("word", "group")
-  x <- as.String("Words Grouped from 1:k\n")
-  
-  for (indx in 1:k) {
-    group <- (filter(group_frame, group == indx))$word
-    x <- x + "Group #" + as.String(indx) + ": "
-    x <- x + as.String(paste(group, collapse = ", ")) + "\n"
-  }
-}
+rmdFile <- c("mrkdwn.rmd")
+sapply(rmdFile, knit, quiet = T)
 
 ui <- navbarPage("Mining the \"419\" Dataset",
         tabPanel("Main",
           verticalLayout(
-            verbatimTextOutput("main")
+            includeMarkdown(rmdFile)
           )       
         ),
         tabPanel("WordCloud",
