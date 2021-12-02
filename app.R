@@ -83,8 +83,8 @@ ui <- navbarPage("Navbar",
               plotOutput("Dendrogram", inline=TRUE)
             ),
             wellPanel(
-              helpText("Choose grouping size: "),
-              numericInput("k", "Cluster Group Size", value = 10, min=3, max=20, step=1),
+              helpText("K-Means Clustering: "),
+              numericInput("k", "Choose a K value", value = 10, min=3, max=20, step=1),
               verbatimTextOutput("groups"),
               submitButton("Submit")
             )
@@ -115,7 +115,7 @@ server <- function(input, output) {
       groups <- cutree(fit, input$k)
       group_frame <- data.frame(names(groups), groups[names(groups)])
       colnames(group_frame) <- c("word", "group")
-      x <- as.String("Words Grouped from 1:k\n")
+      x <- as.String("Words Grouped from 1:K\n")
       
       for (indx in 1:input$k) {
         group <- (filter(group_frame, group == indx))$word
