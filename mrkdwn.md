@@ -3,8 +3,6 @@ title: "\"419\" Email Fraud"
 output: html_document
 ---
 
-
-
 ## Data Mining Group Project
 
 The "419" or "Nigerian Letter" dataset is a collection of fradulent letters sent to individuals, typically asking for banking information so that funds may be transferred to the user.
