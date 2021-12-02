@@ -50,9 +50,9 @@ allEmails <- as.vector(emailCorpusFrame$text)
 
 # Cluster terms
 distMatrix <- dist(scale(m))
-fit <- hclust(distMatrix, method="ward.D")
+fit <- hclust(distMatrix, method = "ward.D")
 
-plot(fit)
+plot(fit, xlab = "Words", sub = "Using Ward Clustering")
 rect.hclust(fit, k=10)
 groups <- cutree(fit, k=10)
 group_frame <- data.frame(names(groups), groups[names(groups)])
@@ -64,5 +64,9 @@ for (indx in 1:k) {
   currentWords = group$word
 }
 
-save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
+mainText <- "The \"419\" or \"Nigerian Letter\" dataset is a collection of fradulent letters sent to individuals, typically asking for banking information so that funds may be transferred to the user.\n
+The dataset can be found at https://www.kaggle.com/rtatman/fraudulent-email-corpus and various other places.\nThis page was made for the Data Mining Course at Kent State University, and employs Text-Mining and Clustering methodologies to display graphics that depict the dataset based on word frequncy, and word grouping.\n
+The code is hosted on github at https://github.com/jasonbconley/DataMiningProject\n "
+
+save(mainText, fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
 

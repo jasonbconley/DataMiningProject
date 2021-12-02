@@ -57,7 +57,12 @@ makeGroups <- function(k) {
   }
 }
 
-ui <- navbarPage("Navbar",
+ui <- navbarPage("Mining the \"419\" Dataset",
+        tabPanel("Main",
+          verticalLayout(
+            verbatimTextOutput("main")
+          )       
+        ),
         tabPanel("WordCloud",
           verticalLayout(
                 fluidRow(
@@ -95,7 +100,11 @@ ui <- navbarPage("Navbar",
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-    output$wordCloud <- renderWordcloud2({
+  output$main <- renderText({
+     mainText
+  })  
+  
+  output$wordCloud <- renderWordcloud2({
       wordcloud2(data=enframe(wordFreq[input$wordCloudChoices]), color = pal, ellipticity = 1, minRotation = -pi/6, maxRotation = -pi/6)}
     )
     
@@ -107,7 +116,7 @@ server <- function(input, output) {
     })
     
     output$Dendrogram <- renderPlot({
-      plot(fit, cex=input$opt.cex, cex.lab=input$opt.cexaxis, xlab = "Words")
+      plot(fit, cex=input$opt.cex, cex.lab=input$opt.cexaxis, xlab = "Words", sub = "Using Ward Clustering")
       rect.hclust(fit, k=input$k)}, height = 600, width = 1400
     )
     
