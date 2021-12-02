@@ -49,7 +49,7 @@ getSupport <- function(wordChoices, suppCount) {
 }
 
 
-ui <- navbarPage("Mining the \"419\" Dataset",
+ui <- navbarPage("Mining the \"419\" Email Dataset",
         tabPanel("Main",
           verticalLayout(
             includeMarkdown("mrkdwn.md")

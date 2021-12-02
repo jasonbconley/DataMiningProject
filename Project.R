@@ -64,7 +64,7 @@ for (indx in 1:k) {
   currentWords = group$word
 }
 
-rmdFile <- c("mrkdwn.Rmd")
+sapply("mrkdwn.Rmd", knit, quiet = T)
 
-save(rmdFile, fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
+save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
 
