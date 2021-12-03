@@ -4,9 +4,7 @@ library(SnowballC) # love lover lovingly lovely loving
 library(Rcpp)
 library(ggplot2)
 library(wordcloud2)
-library(dplyr) 
-
-# https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+library(dplyr) # https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
 
 # Book: https://drive.google.com/file/d/1gn7cMdpMkDwHVTfDldAkn5i3_pRtoH-H/view 
 
