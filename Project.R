@@ -39,6 +39,8 @@ emailCorpus <- tm_map(emailCorpus, removeNumbers)
 
 emailCorpus <- tm_map(emailCorpus, stripWhitespace)
 
+emailCorpus <- tm_map(emailCorpus, stemDocument)
+
 emailCorpusFrame <- as_corpus_frame(emailCorpus)
 term_stats(emailCorpusFrame, ngrams=5)
 
