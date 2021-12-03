@@ -4,7 +4,9 @@ library(SnowballC) # love lover lovingly lovely loving
 library(Rcpp)
 library(ggplot2)
 library(wordcloud2)
-library(dplyr) # https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+library(dplyr) 
+
+# https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
 
 # Book: https://drive.google.com/file/d/1gn7cMdpMkDwHVTfDldAkn5i3_pRtoH-H/view 
 
@@ -79,19 +81,19 @@ allEmails <- as.vector(emailCorpusFrame$text)
 
 # Cluster terms and plot
 distMatrix <- dist(scale(m))
-fit <- hclust(distMatrix, method = "ward.D") # Will go into this in the presentation, hierarchical clustering, not using Ward 
+fit <- hclust(distMatrix, method = "ward.D") # Will go into this in the presentation, hierarchical clustering, not using Ward (1963) clustering criterion
 plot(fit, xlab = "Words", sub = "Using Ward Clustering")
 rect.hclust(fit, k=10)
 
-groups <- cutree(fit, k=10)
-group_frame <- data.frame(names(groups), groups[names(groups)])
-colnames(group_frame) <- c("word", "group")
-k = 10
-currentFrame <- data.frame(1:k)
-for (indx in 1:k) {
-  group <- (filter(group_frame, group == k))$words
-  currentWords = group$word
-}
+# groups <- cutree(fit, k=10)
+# group_frame <- data.frame(names(groups), groups[names(groups)])
+# colnames(group_frame) <- c("word", "group")
+# k = 10
+# currentFrame <- data.frame(1:k)
+# for (indx in 1:k) {
+#   group <- (filter(group_frame, group == k))$words
+#   currentWords = group$word
+# }
 
 grayLevels <- gray( (wordFreq+10) / (max(wordFreq)+10) )
 
