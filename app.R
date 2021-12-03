@@ -80,12 +80,24 @@ ui <- navbarPage("Mining the \"419\" Email Dataset",
               plotOutput("Dendrogram", inline=TRUE)
             ),
             wellPanel(
-              helpText("K-Means Clustering: "),
-              numericInput("k", "Choose a K value", value = 10, min=3, max=20, step=1),
+              helpText("Grouping: "),
+              numericInput("k", "Choose a Level", value = 10, min=5, max=70, step=5),
               verbatimTextOutput("groups"),
               submitButton("Submit")
             )
           )
+        ),
+        tabPanel("N-Grams",
+          verticalLayout(
+            mainPanel(
+              dataTableOutput("table")
+            ),
+            wellPanel(
+              helpText("Choose length of n-grams: (Submit to see)"),
+              numericInput("n", "Choose a number [3,8]", value = 3, min = 3, max = 8, step = 1),
+              submitButton("Submit")
+            )
+          )         
         )
 )
 
@@ -128,6 +140,12 @@ server <- function(input, output) {
         x <- x + as.String("\n")
       }
       x
+    })
+    
+    output$table <- renderDataTable({
+      x <- term_stats(emailCorpusFrame, ngrams = input$n)
+      x <- data.frame(text = sapply(x, as.character), stringsAsFactors = FALSE)
+      x[1:20,]
     })
     
 }

@@ -1,5 +1,3 @@
-library(shiny)
-library(shinyWidgets)
 library(tm)
 library(corpus)
 library(SnowballC)
@@ -7,6 +5,8 @@ library(Rcpp)
 library(ggplot2)
 library(wordcloud)
 library(dplyr)
+
+conjunctions <- c("a", "us", "may", "that", "and", "can", "get", "make", "shall", "are", "as", "at", "but", "for", "has", "the", "is", "to", "or", "this", "come", "also")
 
 # Here we set up the fraudulent email data set into a Corpus for processing
 # A corpus is a data structure that I had not seen before this text. Running
@@ -21,17 +21,26 @@ emailCorpus <- Corpus(VectorSource(emailCorpusFrame$text))
 # the data frame
 emailCorpus <- tm_map(emailCorpus, tolower)
 removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+
 emailCorpus <- tm_map(emailCorpus, removeURL)
 removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
+
 emailCorpus <- tm_map(emailCorpus, removeNumPunct)
 replaceComma <- function(x) gsub(",", " ", x)
+
 emailCorpus <- tm_map(emailCorpus, replaceComma)
-conjunctions <- c("a", "us", "may", "that", "and", "can", "get", "make", "shall", "are", "as", "at", "but", "for", "has", "the", "is", "to", "or", "this", "come", "also")
 myStopwords <- c(stopwords("en"), "available", "via", conjunctions)
+
 emailCorpus <- tm_map(emailCorpus, removeWords, myStopwords)
+
 emailCorpus <- tm_map(emailCorpus, removePunctuation)
+
 emailCorpus <- tm_map(emailCorpus, removeNumbers)
+
 emailCorpus <- tm_map(emailCorpus, stripWhitespace)
+
+emailCorpusFrame <- as_corpus_frame(emailCorpus)
+term_stats(emailCorpusFrame, ngrams=5)
 
 # Now we can create the term document matrix, a collection of all terms and
 # the number of their occurrences in each document or email
@@ -60,11 +69,11 @@ colnames(group_frame) <- c("word", "group")
 k = 10
 currentFrame <- data.frame(1:k)
 for (indx in 1:k) {
-  group <- (filter(group_frame, group == 1))$words
+  group <- (filter(group_frame, group == k))$words
   currentWords = group$word
 }
 
-sapply("mrkdwn.Rmd", knit, quiet = T)
+# sapply("mrkdwn.Rmd", knit, quiet = T)
 
-save(fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
+save(emailCorpusFrame, fit, tdm, wordFreq, grayLevels, totalEmails, allEmails, file = "objects.RData")
 
