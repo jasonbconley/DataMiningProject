@@ -8,5 +8,5 @@ Download RStudio, open the .R file and run to see the program work.
   Using code from https://drive.google.com/file/d/1gn7cMdpMkDwHVTfDldAkn5i3_pRtoH-H/view
 
 
-Site is live at http://198.199.85.12:3838/DataMiningProject
+Site is no longer live
 
